@@ -1,0 +1,78 @@
+Problem:
+You have been given two arrays P and Q with sizes N and M respectively.
+An unusual sequence is being defined in two ways:
+●	A sequence such that  p1< q1 < p2 < q2 < and so on,
+●	A sequence such that  q1 < p1 < q2 < p2 < and so on,
+
+ Here p1, p2 , p3,... is a subsequence of array P and q1 , q2 , q3,..  is a subsequence of array Q
+
+Find the maximum length of such a sequence that can be formed.
+
+Input format:
+●	The first line contains an integer T denoting the number of test cases.
+●	The first line of each test case contains two space-separated integers N and M
+●	The second line of each test case contains N space-separated integers denoting array P
+●	The third line of each test case contains M space-separated integers denoting array Q
+Output format:
+For each test case, print the maximum length of an unusual sequence in a new line.
+
+Constrains:
+1<T<10
+1<N,M<10^4
+-10^6<P[i], Q[i]<10^6
+
+Example/Test case:
+Input	
+1
+4 2
+2 1 3 1
+5 2	
+Output
+3
+Choose subsequence 1,3 from P and 2 from Q giving an unusual sequence as 1<2<3
+
+SOLUTION:
+
+#include<bits/stdc++.h>
+using namespace std;
+ 
+void solve()
+{
+	int n,m;
+	cin>>n>>m;
+	int A[n],B[m];
+	for(int i = 0;i<n;i++) cin>>A[i];
+	for(int i = 0;i<m;i++) cin>>B[i];
+ 
+	int dp[n+1][m+1][2];
+	int pre[n+1][m+1][2];
+ 
+	memset(dp,0,sizeof(dp));
+	memset(pre,0,sizeof(pre));
+	int ans = 0;
+ 
+	for(int i = 1;i<n+1;i++){
+		for(int j = 1;j<m+1;j++){
+			if(A[i-1]<=B[j-1]) dp[i][j][0] = 1;
+			else dp[i][j][0] = 1+pre[i-1][j][1];
+ 
+			if(B[j-1]<=A[i-1]) dp[i][j][1] = 1;
+			else dp[i][j][1] = 1+pre[i][j-1][0];
+ 
+			ans = max(ans,max(dp[i][j][0],dp[i][j][1]));
+			pre[i][j][0] = max(pre[i][j-1][0],dp[i][j][0]);
+			pre[i][j][1] = max(pre[i-1][j][1],dp[i][j][1]);
+ 
+		}
+	}
+	cout<<ans<<'\n';
+}
+ 
+int main()
+{
+	cin.tie(NULL);
+	ios_base::sync_with_stdio(false);
+	int t;
+	cin>>t;
+	for(int i = 0;i<t;i++) solve();
+}
